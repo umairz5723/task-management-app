@@ -1,16 +1,12 @@
 .add-task-modal-container {
-    display: flex;
-    flex-direction: column; /* Allow stacking of the close button and form */
-    align-items: center;
-    justify-content: center;
-    border: 2px solid black;
+    background: white;
     padding: 20px;
-    width: 400px; /* Set a fixed width for the modal */
-    border-radius: 8px; /* Add some rounded corners */
-    background-color: #f9f9f9; /* Light background color for contrast */
-    position: relative; /* For positioning the close button */
+    border-radius: 8px;
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    /* Add any other existing styles you have for the modal container */
 }
-
 .add-task-form {
     display: flex;
     flex-direction: column;
@@ -78,3 +74,15 @@
 }
 
 
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}

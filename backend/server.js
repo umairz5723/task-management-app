@@ -95,6 +95,45 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
+
+// -------------------------- PUT ROUTES -------------------------------
+app.put('/api/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, description, urgency } = req.body;
+
+  // Validate input
+  if (!title || !description || !urgency) {
+      return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+      // Check if task exists
+      const checkTask = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+      if (checkTask.rows.length === 0) {
+          return res.status(404).json({ error: "Task not found" });
+      }
+
+      // Update the task
+      const query = `
+          UPDATE tasks 
+          SET title = $1, 
+              description = $2, 
+              urgency = $3
+          WHERE id = $4
+          RETURNING *`;
+      
+      const values = [title, description, urgency, id];
+      const result = await pool.query(query, values);
+
+      console.log("Updated task:", result.rows[0]); // Log the updated task
+      res.json(result.rows[0]); // Send the updated task back in the response
+  } catch (error) {
+      console.error('Error updating task:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
