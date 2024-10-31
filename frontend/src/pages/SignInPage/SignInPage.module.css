@@ -1,0 +1,118 @@
+/* Sign-in Page Container */
+.signin-page-container {
+    background-color: #f3f4f6; /* Neutral background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Login container */
+.login-container-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 400px;
+    max-width: 90vw;
+    box-sizing: border-box;
+}
+
+/* Title style */
+h2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Input Area */
+.input-area-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+}
+
+/* Label styles */
+label {
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    letter-spacing: 0.02rem;
+    align-self: flex-start;
+}
+
+/* Input styles */
+input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Button styles for SignInPage */
+.login-container-div button {
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.login-container-div button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 3px 6px rgba(0, 123, 255, 0.2);
+}
+
+/* Sign-up section */
+.signup-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.signup-div p {
+    margin-right: 8px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Sign-up button */
+.signup-btn {
+    padding: 8px;
+    background-color: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.signup-btn:hover {
+    background-color: #007bff;
+    color: white;
+}

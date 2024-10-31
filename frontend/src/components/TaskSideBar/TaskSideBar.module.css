@@ -1,0 +1,80 @@
+.signout-button {
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 10px; /* Add some space below the button */
+}
+
+.signout-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+/* Sidebar Title */
+.sidebar-title {
+    font-size: 1.5rem;              /* Larger font size for titles */
+    color: #2C3E50;                 /* Darker color for contrast */
+    margin-bottom: 10px;            /* Spacing below title */
+    text-transform: uppercase;       /* Uppercase for emphasis */
+    letter-spacing: 0.05rem;        /* Slight letter spacing */
+}
+
+/* Sidebar List */
+.tasks-sidebar-list {
+    list-style: none;                /* Remove bullet points */
+    padding: 0;                     /* Remove padding */
+    margin: 0;                      /* Remove default margin */
+}
+
+/* Sidebar List Item */
+.sidebar-list-item {
+    display: flex;                  /* Flexbox for alignment */
+    align-items: center;            /* Center items vertically */
+    justify-content: center;
+    padding: 10px;                 /* Padding for list items */
+    border-radius: 4px;            /* Slightly rounded corners */
+    transition: background-color 0.3s ease; /* Transition for hover effect */
+}
+
+.sidebar-list-item:hover, .sidebar-list-item-selected {
+    background-color: #007bff;
+    color: white;
+}
+
+
+/* Sidebar List Title */
+.sidebar-list-title {
+    font-weight: bold;               /* Make titles bold */
+    margin-top: 15px;               /* Space between sections */
+}
+
+/* Checkbox styles */
+.sidebar-list-item input[type="checkbox"] {
+    margin-right: 10px;              /* Space between checkbox and label */
+}
+
+/* Input styles */
+.search-input {
+    padding: 10px;
+    border: 1px solid #CCCCCC;       
+    border-radius: 6px;
+    width: calc(100% - 22px); /* Full width minus padding */
+    margin-top: 10px;         /* Space above the input */
+}
+
+/* Button styles for the search button */
+.search-button {
+    padding: 10px 15px;
+    background-color: #007BFF; /* Primary blue button */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Space above the button */
+}
+
+.search-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

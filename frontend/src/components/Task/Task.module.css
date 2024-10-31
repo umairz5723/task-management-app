@@ -1,0 +1,140 @@
+/* Task.module.css */
+.task-card {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+    display: flex;
+    flex-direction: column;
+    min-height: 230px; /* Minimum height */
+    width: 330px; /* Set a fixed width for uniformity */
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    overflow: hidden; /* Prevents content from overflowing */
+    justify-content: space-between; /* Space out sections evenly */
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Urgency styles */
+.task-urgency-low {
+    background-color: rgb(224, 242, 241); /* Light teal */
+    color: rgb(0, 121, 107); /* Dark teal text */
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.task-urgency-medium {
+    background-color: #fff3e0;
+    color: #e65100;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.task-urgency-high {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red text */
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Progress styles */
+.progress-in-progress {
+    background-color: rgb(227, 242, 253); /* Light blue */
+    color: rgb(21, 101, 192); /* Dark blue text */
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.progress-completed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Title style */
+.task-title {
+    font-size: 18px; /* Increased font size */
+    font-weight: 600; /* Semi-bold */
+    margin-bottom: 5px;
+    font-family: 'Arial', sans-serif; /* Font family for better readability */
+}
+
+/* Description style */
+.task-desc {
+    font-size: 14px; /* Adjusted font size */
+    margin-bottom: 10px;
+    max-height: 50px; /* Limit the height */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis */
+    font-family: 'Arial', sans-serif; /* Font family for better readability */
+}
+
+/* Urgency and progress container */
+.task-urgency-progress-container {
+    display: flex;
+    justify-content: flex-start; /* Space between urgency and progress */
+    margin-bottom: 10px;
+}
+
+
+/* Date added style */
+.task-urgency {
+    font-size: 12px; /* Smaller font size */
+    color: gray; /* Light gray color */
+    margin-bottom: 10px; /* Space below the date */
+    margin-right:20px;
+}
+
+.task-urgency,
+.progress-in-progress,
+.progress-completed {
+    margin-left: 10px; /* Add spacing to the right of each element */
+}
+
+/* Actions container */
+.task-actions {
+    display: flex;
+    justify-content: space-evenly; /* Evenly space buttons */
+    border-top: 2px solid rgba(0, 0, 0, 0.3); /* Slightly darker border for visibility */
+    padding-top: 10px; /* Padding above the buttons */
+}
+.task-actions button {
+    display: flex; /* Align items in a row */
+    align-items: center; /* Center items vertically */
+    padding: 5px 10px; /* Padding for buttons */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.task-actions button svg {
+    margin-right: 5px; /* Space between icon and text */
+    font-size: 18px; /* Size of the icons */
+}
+/* Button background colors */
+.task-actions button:nth-child(1) {
+    background-color: rgb(74, 144, 226); /* Edit button color */
+}
+
+.task-actions button:nth-child(2) {
+    background-color: rgb(220, 53, 69); /* Delete button color */
+}
+
+/* Button hover styles */
+.task-actions button:hover:nth-child(1) {
+    background-color: rgb(57, 123, 190); /* Darker blue on hover for Edit button */
+}
+
+.task-actions button:hover:nth-child(2) {
+    background-color: rgb(185, 38, 56); /* Darker red on hover for Delete button */
+}
+
+.task-actions .complete-button {
+    background-color: #28a745; /* Green background */
+}
+
+.task-actions .complete-button:hover {
+    background-color: #218838; /* Darker green on hover */
+}

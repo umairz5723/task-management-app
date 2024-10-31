@@ -1,0 +1,40 @@
+.quote-area-container {
+    display: flex;
+    flex-direction: column; /* Align items in a column */
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black; 
+    background-color: #ffffff; /* White background for a clean look */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding around the content */
+    margin-bottom: 20px; /* Space between quote and board */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lighter shadow for depth */
+    height: 60px;
+}
+
+blockquote {
+    font-style: italic; /* Italic style for the quote */
+    color: rgb(74, 144, 226); /* Updated text color to match theme */
+    text-align: center; /* Center the text */
+    margin: 0; /* Remove default margin */
+    padding: 10px 0; /* Vertical padding for blockquote */
+    font-size: 16px; /* Adjust font size for readability */
+}
+
+footer {
+    margin-top: 10px; /* Space between quote and author */
+    font-weight: bold; /* Make the author bold */
+    color: rgb(74, 144, 226); /* Match author text color to the theme */
+    font-size: 14px; /* Slightly smaller font size for the author */
+}
+
+.MuiSvgIcon-root { /* Style for the refresh icon */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    margin-top: 15px; /* Space above the icon */
+    color: rgb(74, 144, 226); /* Match the icon color to the theme */
+    transition: transform 0.2s; /* Smooth scaling on hover */
+}
+
+.MuiSvgIcon-root:hover {
+    transform: scale(1.1); /* Slightly scale the icon on hover */
+}
