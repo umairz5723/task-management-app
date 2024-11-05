@@ -4,11 +4,18 @@ import { doSignOut } from '../../firebase/auth';
 import axios from 'axios';
 import styles from './TaskSideBar.module.css';
 
-export default function TaskSideBar({ setUrgencyFilter, setProgressFilter, resetFiltersTrigger, setTasks }) {
+export default function TaskSideBar({ 
+    setUrgencyFilter, 
+    setProgressFilter, 
+    resetFiltersTrigger, 
+    setTasks 
+}) {
     const navigate = useNavigate();
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedUrgency, setSelectedUrgency] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedUrgency, setSelectedUrgency] = useState('All Levels');
     const [searchInput, setSearchInput] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchError, setSearchError] = useState('');
 
     useEffect(() => {
         if (resetFiltersTrigger) {
@@ -17,43 +24,81 @@ export default function TaskSideBar({ setUrgencyFilter, setProgressFilter, reset
     }, [resetFiltersTrigger]);
 
     const resetFilters = () => {
-        setSelectedCategory(null);
-        setSelectedUrgency(null);
-        setProgressFilter('');
-        setUrgencyFilter('');
+        setSelectedCategory('All');
+        setSelectedUrgency('All Levels');
+        setProgressFilter('All');
+        setUrgencyFilter('All Levels');
+        setSearchInput('');
+        // Reset to all tasks
+        fetchAllTasks();
+    };
+
+    const fetchAllTasks = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/tasks');
+            setTasks(response.data);
+            setSearchError('');
+        } catch (error) {
+            console.error("Error fetching all tasks:", error);
+            setSearchError('Error fetching tasks');
+        }
     };
 
     const handleProgressSelect = (progress) => {
         setSelectedCategory(progress);
         setProgressFilter(progress);
+        // Clear search when changing filters
+        setSearchInput('');
     };
 
     const handleUrgencySelect = (urgency) => {
         setSelectedUrgency(urgency);
         setUrgencyFilter(urgency);
+        // Clear search when changing filters
+        setSearchInput('');
     };
 
-    const searchTasks = async () => {
+    const searchTasks = async (e) => {
+        e?.preventDefault(); // Handle form submission if called from form
+        setIsSearching(true);
+        setSearchError('');
+
         try {
-            // Check if the search input is empty
-            if (searchInput.trim() === '') {
-                // Fetch all tasks (resetting the search)
-                const response = await axios.get('http://localhost:3000/api/tasks');
-                setTasks(response.data); // Set all tasks
-                return; // Exit the function
+            if (!searchInput.trim()) {
+                await fetchAllTasks();
+                return;
             }
 
-            const response = await axios.get('http://localhost:3000/api/searchtask', {
-                params: { taskName: searchInput }
+            const response = await axios.get(`http://localhost:3000/api/searchtask`, {
+                params: { taskName: searchInput.trim() }
             });
-            // Update tasks with the response data
+
             setTasks(response.data);
+            
+            // Reset filters when searching
+            setSelectedCategory('All');
+            setSelectedUrgency('All Levels');
+            setProgressFilter('All');
+            setUrgencyFilter('All Levels');
+
         } catch (error) {
-            console.log("Error searching tasks", error);
-            if (error.response && error.response.status === 404) {
-                // If task not found, set tasks to empty
+            console.error("Error searching tasks:", error);
+            if (error.response?.status === 404) {
                 setTasks([]);
+                setSearchError('No tasks found');
+            } else {
+                setSearchError('Error searching tasks');
             }
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    const handleSearchInputChange = (e) => {
+        setSearchInput(e.target.value);
+        if (e.target.value === '') {
+            // If search input is cleared, reset to all tasks
+            fetchAllTasks();
         }
     };
 
@@ -122,13 +167,23 @@ export default function TaskSideBar({ setUrgencyFilter, setProgressFilter, reset
             </li>
 
             <li className={styles['sidebar-list-title']}>Search by name:</li>
-            <input
-                className={styles['search-input']}
-                placeholder='Enter Task Name Here'
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)} 
-            />
-            <button className={styles['search-button']} onClick={searchTasks}>Search</button>
+            <form onSubmit={searchTasks} className={styles['search-form']}>
+                <input
+                    className={styles['search-input']}
+                    placeholder='Enter Task Name Here'
+                    value={searchInput}
+                    onChange={handleSearchInputChange}
+                    disabled={isSearching}
+                />
+                <button 
+                    type="submit" 
+                    className={`${styles['search-button']} ${isSearching ? styles['searching'] : ''}`}
+                    disabled={isSearching}
+                >
+                    {isSearching ? 'Searching...' : 'Search'}
+                </button>
+            </form>
+            {searchError && <li className={styles['search-error']}>{searchError}</li>}
         </ul>
     );
 }

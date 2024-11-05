@@ -1,62 +1,55 @@
 import React, { useState } from 'react';
 import styles from "./Task.module.css";
-import { TaskProps } from './TasksTypes';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AddTaskModal from '../AddTaskModal/AddTaskModal';
-
-interface ExtendedTaskProps extends TaskProps {
-    refreshTasks: (urgencyFilter: string, progressFilter: string) => void;
-    taskId: string;
-}
+import EditTaskModal from '../EditTaskModal/EditTaskModal';
+import DeleteConfirmationModal from '../DeleteConfirmModal/DeleteConfirmModal';
 
 export default function Task({ 
-    taskId,
     title, 
     description, 
     urgency, 
     date, 
-    completed,
+    completed, 
+    id, 
     refreshTasks 
-}: ExtendedTaskProps) {
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+}) {
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isCompleting, setIsCompleting] = useState(false);
     const formattedDate = new Date(date).toLocaleDateString();
 
     const handleEdit = () => {
-        setIsEditModalOpen(true);
+        setShowEditModal(true);
     };
 
-    const handleCloseModal = () => {
-        setIsEditModalOpen(false);
+    const handleDelete = () => {
+        setShowDeleteModal(true);
     };
 
-    const handleUpdateTask = async (
-        updatedTitle: string, 
-        updatedDescription: string, 
-        updatedUrgency: 'High' | 'Medium' | 'Low'
-    ) => {
+    const handleComplete = async () => {
+        setIsCompleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/tasks/${taskId}`, {
-                method: 'PUT',
+            const response = await fetch(`http://localhost:3000/api/tasks/${id}/complete`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: updatedTitle,
-                    description: updatedDescription,
-                    urgency: updatedUrgency
-                }),
+                }
             });
 
-            if (response.ok) {
-                setIsEditModalOpen(false);
-                refreshTasks('All Levels', 'All');
-            } else {
-                console.error('Failed to update task');
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to complete task');
             }
+
+            // Refresh the task list to show the updated state
+            await refreshTasks('All Levels', 'All');
         } catch (error) {
-            console.error('Error updating task:', error);
+            console.error('Error completing task:', error);
+            // Optionally show an error message to the user
+        } finally {
+            setIsCompleting(false);
         }
     };
 
@@ -80,28 +73,46 @@ export default function Task({
                 <div className={styles['task-actions']}>
                     <button onClick={handleEdit}>
                         <EditIcon /> Edit
-                    </button>  
-                    <button>
+                    </button>   
+                    <button onClick={handleDelete}>
                         <DeleteIcon /> Delete
-                    </button>  
+                    </button>   
                     {!completed && (
-                        <button className={styles['complete-button']}>
-                            <CheckCircleIcon /> Mark Complete
+                        <button 
+                            className={`${styles['complete-button']} ${isCompleting ? styles['completing'] : ''}`}
+                            onClick={handleComplete}
+                            disabled={isCompleting}
+                        >
+                            <CheckCircleIcon /> 
+                            {isCompleting ? 'Completing...' : 'Mark Complete'}
                         </button>
                     )}
                 </div>
             </div>
 
-            {isEditModalOpen && (
-                <AddTaskModal
-                    onClose={handleCloseModal}
+            {showEditModal && (
+                <EditTaskModal
+                    onClose={() => setShowEditModal(false)}
                     refreshTasks={refreshTasks}
-                    initialTitle={title}
-                    initialDescription={description}
-                    urgency={urgency}
-                    isEditing={true}
-                    taskId={taskId}
-                    onUpdate={handleUpdateTask}
+                    task={{
+                        id,
+                        title,
+                        description,
+                        urgency,
+                        completed,
+                        date
+                    }}
+                />
+            )}
+
+            {showDeleteModal && (
+                <DeleteConfirmationModal
+                    onClose={() => setShowDeleteModal(false)}
+                    refreshTasks={refreshTasks}
+                    task={{
+                        id,
+                        title
+                    }}
                 />
             )}
         </>

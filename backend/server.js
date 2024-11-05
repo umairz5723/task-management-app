@@ -98,23 +98,31 @@ app.post('/api/tasks', async (req, res) => {
 
 // -------------------------- PUT ROUTES -------------------------------
 app.put('/api/tasks/:id', async (req, res) => {
-  const { id } = req.params;
+  const taskId = req.params.id;
   const { title, description, urgency } = req.body;
+  
+  console.log('Received PUT request:', {
+      taskId,
+      body: req.body
+  });
 
-  // Validate input
+  // Validate the task ID
+  if (!taskId || taskId === 'undefined') {
+      console.error('Invalid task ID received:', taskId);
+      return res.status(400).json({ error: "Invalid task ID" });
+  }
+
+  // Validate other required fields
   if (!title || !description || !urgency) {
-      return res.status(400).json({ error: "Missing required fields" });
+      console.log('Missing required fields:', { title, description, urgency });
+      return res.status(400).json({ 
+          error: "Missing required fields",
+          details: { title, description, urgency }
+      });
   }
 
   try {
-      // Check if task exists
-      const checkTask = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
-      if (checkTask.rows.length === 0) {
-          return res.status(404).json({ error: "Task not found" });
-      }
-
-      // Update the task
-      const query = `
+      const updateQuery = `
           UPDATE tasks 
           SET title = $1, 
               description = $2, 
@@ -122,16 +130,84 @@ app.put('/api/tasks/:id', async (req, res) => {
           WHERE id = $4
           RETURNING *`;
       
-      const values = [title, description, urgency, id];
-      const result = await pool.query(query, values);
+      const values = [title, description, urgency, taskId];
+      console.log('Executing update query with values:', values);
 
-      console.log("Updated task:", result.rows[0]); // Log the updated task
-      res.json(result.rows[0]); // Send the updated task back in the response
+      const result = await pool.query(updateQuery, values);
+      res.json(result.rows[0]);
+
   } catch (error) {
-      console.error('Error updating task:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error in PUT /api/tasks/:id:', error);
+      res.status(500).json({ 
+          error: 'Internal Server Error',
+          details: error.message
+      });
   }
 });
+
+
+
+// ---------------- DELETE ROUTES -----------------------------------------------------------------------------------
+app.delete('/api/tasks/:id', async (req, res) => {
+  const taskId = req.params.id;
+  
+  if (!taskId || taskId === 'undefined') {
+      return res.status(400).json({ error: "Invalid task ID" });
+  }
+
+  try {
+      const deleteQuery = 'DELETE FROM tasks WHERE id = $1 RETURNING *';
+      const result = await pool.query(deleteQuery, [taskId]);
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: "Task not found" });
+      }
+
+      res.json({ message: "Task deleted successfully", task: result.rows[0] });
+  } catch (error) {
+      console.error('Error deleting task:', error);
+      res.status(500).json({ 
+          error: 'Internal Server Error',
+          details: error.message
+      });
+  }
+});
+
+
+
+// --------------------------- PATCH ROUTES -------------------------
+app.patch('/api/tasks/:id/complete', async (req, res) => {
+  const taskId = req.params.id;
+  
+  if (!taskId || taskId === 'undefined') {
+      return res.status(400).json({ error: "Invalid task ID" });
+  }
+
+  try {
+      const updateQuery = `
+          UPDATE tasks 
+          SET completed = true
+          WHERE id = $1
+          RETURNING *`;
+          
+      const result = await pool.query(updateQuery, [taskId]);
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: "Task not found" });
+      }
+
+      res.json(result.rows[0]);
+  } catch (error) {
+      console.error('Error completing task:', error);
+      res.status(500).json({ 
+          error: 'Internal Server Error',
+          details: error.message
+      });
+  }
+});
+
+
+
 
 
 // Start the server

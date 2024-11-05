@@ -1,34 +1,30 @@
+// AddTaskModal.tsx
 import { useState, useEffect } from "react";
-import { createPortal } from 'react-dom';
-import styles from "./AddTaskModal.module.css";
+import { createPortal } from "react-dom";
+import styles from "./ModalStyles.module.css";
 
-export default function AddTaskModal({ 
-    onClose, 
-    refreshTasks, 
-    initialTitle = '', 
-    initialDescription = '', 
-    urgency = 'Low',
-    isEditing = false,
-    taskId,
-    onUpdate
-}) {
-    const [taskTitle, setTaskTitle] = useState(initialTitle);
-    const [taskDescription, setTaskDescription] = useState(initialDescription);
-    const [taskUrgency, setTaskUrgency] = useState(urgency);
+export default function AddTaskModal({ onClose, refreshTasks }) {
+    const [taskTitle, setTaskTitle] = useState('');
+    const [taskDescription, setTaskDescription] = useState('');
+    const [urgency, setUrgency] = useState('Low');
 
+    // Close modal when clicking escape key
     useEffect(() => {
-        // Prevent background scrolling when modal is open
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'unset';
+        const handleEsc = (event) => {
+            if (event.keyCode === 27) onClose();
         };
-    }, []);
+        window.addEventListener('keydown', handleEsc);
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+        };
+    }, [onClose]);
 
-    useEffect(() => {
-        setTaskTitle(initialTitle);
-        setTaskDescription(initialDescription);
-        setTaskUrgency(urgency);
-    }, [initialTitle, initialDescription, urgency]);
+    // Handle overlay click
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,12 +38,8 @@ export default function AddTaskModal({
             alert("Task description must be between 1 and 100 characters.");
             return;
         }
-
-        if (isEditing && onUpdate) {
-            // Handle editing existing task
-            onUpdate(taskTitle, taskDescription, taskUrgency);
-        } else {
-            // Handle adding new task
+        
+        if(taskTitle && taskDescription && urgency){
             try {
                 const response = await fetch('http://localhost:3000/api/tasks', {
                     method: 'POST',
@@ -57,66 +49,62 @@ export default function AddTaskModal({
                     body: JSON.stringify({
                         title: taskTitle,
                         description: taskDescription,
-                        urgency: taskUrgency
+                        urgency
                     }),
                 });
-
-                if (response.ok) {
+                if(response.ok){
                     setTaskTitle('');
                     setTaskDescription('');
-                    setTaskUrgency('Low');
-                    onClose();
+                    setUrgency('Low');
+                    onClose(); 
                     refreshTasks('All Levels', 'All');
                 }
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         }
     };
 
-    // Render the modal in a portal
     return createPortal(
-        <div className={styles.modalOverlay}>
-            <div className={styles['add-task-modal-container']}>
-                <button className={styles['close-button']} onClick={onClose}>
-                    ✖
+        <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+            <div className={styles.modalContent}>
+                <button className={styles.closeButton} onClick={onClose}>
+                    ✖ 
                 </button>
-
-                <form className={styles['add-task-form']} onSubmit={handleSubmit}>
+        
+                <form className={styles.addTaskForm} onSubmit={handleSubmit}>
                     <label>Task Title:
                         <small>(Max 50 characters)</small>
-                        <input
-                            type="text"
+                        <input 
+                            type="text" 
                             placeholder="What's your task?"
                             value={taskTitle}
                             onChange={(e) => setTaskTitle(e.target.value)}
                         />
                     </label>
-
+        
                     <label>Task Description:
                         <small>(Max 150 characters)</small>
-                        <input
-                            type="text"
+                        <input 
+                            type="text" 
                             placeholder="What's this task about?"
                             value={taskDescription}
                             onChange={(e) => setTaskDescription(e.target.value)}
                         />
                     </label>
-
+        
                     <label>Urgency Level:
-                        <select
-                            value={taskUrgency}
-                            onChange={(e) => setTaskUrgency(e.target.value)}
+                        <select 
+                            value={urgency} 
+                            onChange={(e) => setUrgency(e.target.value)}
                         >
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
                         </select>
                     </label>
-
-                    <button type="submit" id="add-task-submit-btn">
-                        {isEditing ? 'Update task' : 'Add this task!'}
-                    </button>
+        
+                    <button type="submit" id="add-task-submit-btn">Add this task!</button>
                 </form>
             </div>
         </div>,

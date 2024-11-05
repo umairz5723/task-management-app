@@ -1,8 +1,22 @@
-// Define the types for the component's props
 export interface TaskProps {
-    title: string;
-    description: string;
-    urgency: 'High' | 'Medium' | 'Low';  // Enforcing only the three valid options
-    date: string;  // Assuming date is coming as a string (ISO format)
-    completed: boolean;
-  }
+  id: string;
+  title: string;
+  description: string;
+  urgency: string;
+  date: string;
+  completed: boolean;
+  refreshTasks: (urgencyFilter: string, progressFilter: string) => void;
+}
+
+export interface EditTaskModalProps {
+  onClose: () => void;
+  refreshTasks: (urgencyFilter: string, progressFilter: string) => void;
+  task: {
+      id: string;
+      title: string;
+      description: string;
+      urgency: string;
+      date: string;
+      completed: boolean;
+  };
+}

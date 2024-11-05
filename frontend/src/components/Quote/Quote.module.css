@@ -1,40 +1,131 @@
-.quote-area-container {
+.quoteContainer {
     display: flex;
-    flex-direction: column; /* Align items in a column */
     justify-content: center;
     align-items: center;
-    border: 2px solid black; 
-    background-color: #ffffff; /* White background for a clean look */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px; /* Padding around the content */
-    margin-bottom: 20px; /* Space between quote and board */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lighter shadow for depth */
-    height: 60px;
+    border: 2px solid rgb(74, 144, 226);
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-height: 60px;
+    transition: all 0.3s ease;
 }
 
-blockquote {
-    font-style: italic; /* Italic style for the quote */
-    color: rgb(74, 144, 226); /* Updated text color to match theme */
-    text-align: center; /* Center the text */
-    margin: 0; /* Remove default margin */
-    padding: 10px 0; /* Vertical padding for blockquote */
-    font-size: 16px; /* Adjust font size for readability */
+.quoteContainer:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
-footer {
-    margin-top: 10px; /* Space between quote and author */
-    font-weight: bold; /* Make the author bold */
-    color: rgb(74, 144, 226); /* Match author text color to the theme */
-    font-size: 14px; /* Slightly smaller font size for the author */
+.quoteWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
 }
 
-.MuiSvgIcon-root { /* Style for the refresh icon */
-    cursor: pointer; /* Pointer cursor for interactivity */
-    margin-top: 15px; /* Space above the icon */
-    color: rgb(74, 144, 226); /* Match the icon color to the theme */
-    transition: transform 0.2s; /* Smooth scaling on hover */
+.quoteContent {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    padding: 0 10px;
 }
 
-.MuiSvgIcon-root:hover {
-    transform: scale(1.1); /* Slightly scale the icon on hover */
+.quoteText {
+    font-style: italic;
+    color: rgb(74, 144, 226);
+    text-align: center;
+    margin: 0;
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.quoteMark {
+    color: rgba(74, 144, 226, 0.3);
+    font-size: 24px;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.refreshButton {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.refreshButton svg {
+    color: rgb(74, 144, 226);
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.refreshButton:hover svg {
+    transform: rotate(30deg);
+}
+
+.refreshButton.spinning svg {
+    animation: spin 1s linear infinite;
+}
+
+.errorMessage {
+    color: #dc3545;
+    margin: 0;
+    text-align: center;
+    font-style: italic;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animation for new quotes */
+.quoteText {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Disable hover effects when refreshing */
+.refreshButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quoteContainer {
+        padding: 15px;
+    }
+
+    .quoteText {
+        font-size: 14px;
+    }
+
+    .quoteMark {
+        font-size: 20px;
+    }
 }
